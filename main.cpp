@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <glut.h>
 #define WIDTH 600
@@ -5,10 +6,21 @@
 
 double arr[5000][4];
 int z=0;
-int flag=0;
 int flag2=0;
 float radius=0.03;
 float color[3][3]={{1.0,1.0,1.0},{1.0,1.0,0.0},{0.0,1.0,0.0}};
+
+enum MENU_TYPE
+{
+        MENU_FRONT,
+        MENU_SPOT,
+        MENU_BACK,
+        MENU_BACK_FRONT,
+};
+
+MENU_TYPE show = MENU_BACK_FRONT;
+
+void menu(int);
 
 void init()
 {
@@ -38,7 +50,6 @@ float getOpenGLY(int y)
 void drawPoints()
 {
     glBegin( GL_POINTS );
-    glColor3f( 0.0,0.0,0.0 );
     for ( int i = 0; i < z; i++ )
     {
         glVertex2f( arr[i][0], arr[i][1]);
@@ -48,8 +59,7 @@ void drawPoints()
 
 void drawLines()
 {
-    glBegin(GL_LINE_STRIP);
-    glColor3f(1.0,0.0,0.0);
+    glBegin(GL_LINE_LOOP);
     for(int i=0;i<z;i++)
     {
         glVertex2f(arr[i][0],arr[i][1]);
@@ -68,11 +78,8 @@ void addValue(int x,int y)
 void myDisplay()
 {
     glClear( GL_COLOR_BUFFER_BIT);
-    if(!flag)
-    {
-        drawLines();
-    }
-    else if(flag2){
+    drawLines();
+    if(flag2){
         drawPoints();
     }
     glutSwapBuffers();
@@ -83,23 +90,11 @@ void myDisplay()
 
 void myMouseStat(int button,int state,int x, int y)
 {
-    if(button==GLUT_LEFT_BUTTON && state==GLUT_DOWN)
+    if(button==GLUT_RIGHT_BUTTON && state==GLUT_DOWN)
     {
-        if(!flag)
-        {
-            resetAll();
-            flag=1;
-        }
+        //resetAll();
     }
-    else if(button==GLUT_LEFT_BUTTON && state==GLUT_UP)
-    {
-        if(flag)
-        {
-            flag=0;
-        }
-    }
-
-    if ((button == GLUT_RIGHT_BUTTON) && (state == GLUT_DOWN))
+    if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_DOWN))
     {
         if(!flag2){
             flag2=1;
@@ -107,7 +102,7 @@ void myMouseStat(int button,int state,int x, int y)
         }
     }
 
-    else if ((button == GLUT_RIGHT_BUTTON) && (state == GLUT_UP))
+    else if ((button == GLUT_LEFT_BUTTON) && (state == GLUT_UP))
     {
         if(flag2){
             flag2=0;
@@ -117,13 +112,33 @@ void myMouseStat(int button,int state,int x, int y)
 
 }
 
-
-void myPressedMove(int x,int y)
+void menu(int item)
 {
-    if(flag)
-    {
-        addValue(x,y);
-    }
+        switch (item)
+        {
+        case MENU_FRONT:
+            glClear( GL_COLOR_BUFFER_BIT );
+            glColor3ub(255,0,0);
+            break;
+        case MENU_SPOT:
+            glClear( GL_COLOR_BUFFER_BIT );
+            glColor3ub(0,0,255);
+            break;
+        case MENU_BACK:
+            resetAll();
+        case MENU_BACK_FRONT:
+                {
+                        show = (MENU_TYPE) item;
+                }
+                break;
+        default:
+                {       /* Nothing */       }
+                break;
+        }
+
+        glutPostRedisplay();
+
+        return;
 }
 
 int main( int argc, char ** argv)
@@ -136,7 +151,15 @@ int main( int argc, char ** argv)
     init();
     glutDisplayFunc(myDisplay);
     glutMouseFunc(myMouseStat);
-    glutMotionFunc(myPressedMove);
+
+
+    glutCreateMenu(menu);
+    glutAddMenuEntry("Change To Polygon", MENU_FRONT);
+    glutAddMenuEntry("Change To Window", MENU_SPOT);
+    glutAddMenuEntry("Reset", MENU_BACK);
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+
     glutMainLoop();
     return 0;
 }
