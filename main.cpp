@@ -1,10 +1,12 @@
 #include <iostream>
 #include <glut.h>
-#define WIDTH 600
-#define HEIGHT 600
+
+
+double WIDTH  = 600;
+double HEIGHT = 600;
 
 double arr[5000][4];
-double arrWin[2][2] = {{0,0},{WIDTH,HEIGHT}};
+double arrWin[2][2] = {{0,0},{600,600}};
 int z=0;
 int z2=0;
 int flag2=0;
@@ -38,7 +40,7 @@ void resetAll()
 
 float getOpenGLX(int x)
 {
-    double ox = x/ (double)WIDTH*(WIDTH);
+    double ox = x/ (double)WIDTH*WIDTH;
     return ox;
 }
 
@@ -112,6 +114,14 @@ void myDisplay()
     glFlush();
 }
 
+void reshape (int w, int h) {
+    if(WIDTH != w || HEIGHT != h)
+    {
+        WIDTH = w;
+        HEIGHT = h;
+    }
+}
+
 
 void myMouseStat(int button,int state,int x, int y)
 {
@@ -168,6 +178,7 @@ int main( int argc, char ** argv)
     glutCreateWindow( "Testing");
     init();
     glutDisplayFunc(myDisplay);
+    glutReshapeFunc(reshape);
     glutMouseFunc(myMouseStat);
 
     glClear( GL_COLOR_BUFFER_BIT );
