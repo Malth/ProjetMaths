@@ -2,11 +2,11 @@
 #include <glut.h>
 
 
-double WIDTH  = 600;
-double HEIGHT = 600;
+double WIDTH  = 500;
+double HEIGHT = 500;
 
-double arr[5000][4];
-double arrWin[2][2] = {{0,0},{600,600}};
+double arr[5000][2];
+double arrWin[2][2] = {{0,0},{500,500}};
 int z=0;
 int z2=0;
 int flag2=0;
@@ -46,7 +46,7 @@ float getOpenGLX(int x)
 
 float getOpenGLY(int y)
 {
-    double oy = (1 - y/ (double) HEIGHT)*HEIGHT;
+    double oy = (1-y/ (double) HEIGHT)*HEIGHT;
     return oy;
 }
 
@@ -64,10 +64,10 @@ void drawRect()
 {
     glColor3ub(0,0,255);
     glBegin(GL_LINE_LOOP);
-    glVertex2f(arrWin[0][0],arrWin[0][1]);
-    glVertex2f(arrWin[1][0],arrWin[0][1]);
-    glVertex2f(arrWin[1][0],arrWin[1][1]);
-    glVertex2f(arrWin[0][0],arrWin[1][1]);
+    glVertex2i(arrWin[0][0],arrWin[0][1]);
+    glVertex2i(arrWin[1][0],arrWin[0][1]);
+    glVertex2i(arrWin[1][0],arrWin[1][1]);
+    glVertex2i(arrWin[0][0],arrWin[1][1]);
     glEnd();
 }
 
@@ -77,7 +77,7 @@ void drawPoly()
     glBegin(GL_POLYGON);
     for(int i=0;i<z;i++)
     {
-        glVertex2f(arr[i][0],arr[i][1]);
+        glVertex2i(arr[i][0],arr[i][1]);
     }
     glEnd();
 }
@@ -100,13 +100,13 @@ void addWinValue(int x,int y)
         arrWin[1][1]=getOpenGLY(y);
         z2 = 0;
     }
-
 }
 
 
 void myDisplay()
 {
     glClear( GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
     drawPoly();
     drawRect();
     glutSwapBuffers();
@@ -114,12 +114,10 @@ void myDisplay()
     glFlush();
 }
 
-void reshape (int w, int h) {
-    if(WIDTH != w || HEIGHT != h)
-    {
-        WIDTH = w;
-        HEIGHT = h;
-    }
+void reshape (int w, int h)
+{
+    glViewport(0,0,w,h);
+  	//gluPerspective(45,float(WIDTH)/float(HEIGHT),10,100);
 }
 
 
@@ -169,18 +167,40 @@ void menu(int item)
         return;
 }
 
+void clavier(unsigned char touche,int x,int y){
+	switch (touche){
+
+		case 'p':
+			glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+			glutPostRedisplay();
+			break;
+
+		case 'f':
+			glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+			glutPostRedisplay();
+			break;
+
+		case 's':
+			glPolygonMode(GL_FRONT_AND_BACK,GL_POINT);
+			glutPostRedisplay();
+			break;
+
+		case 'q':
+			exit(0);
+	}
+}
+
 int main( int argc, char ** argv)
 {
     glutInit( &argc, argv);
     glutInitDisplayMode( GLUT_DOUBLE| GLUT_RGB);
-    glutInitWindowPosition( 100, 100);
     glutInitWindowSize(WIDTH,HEIGHT);
     glutCreateWindow( "Testing");
     init();
     glutDisplayFunc(myDisplay);
     glutReshapeFunc(reshape);
     glutMouseFunc(myMouseStat);
-
+    glutKeyboardFunc(clavier);
     glClear( GL_COLOR_BUFFER_BIT );
     glColor3ub(255,0,0);
 
@@ -190,7 +210,6 @@ int main( int argc, char ** argv)
     glutAddMenuEntry("Survey", MENU_APP);
     glutAddMenuEntry("Reset", MENU_BACK);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
-
 
     glutMainLoop();
     return 0;
