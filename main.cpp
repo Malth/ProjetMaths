@@ -1,6 +1,6 @@
 #include <iostream>
 #include <glut.h>
-
+#include <stdio.h>
 
 double WIDTH  = 500;
 double HEIGHT = 500;
@@ -9,10 +9,11 @@ double arr[5000][2];
 double arrWin[2][2] = {{0,0},{500,500}};
 int z=0;
 int z2=0;
-int flag2=0;
 int fmen = 0;
 float radius=0.03;
 float color[3][3]={{1.0,1.0,1.0},{1.0,1.0,0.0},{0.0,1.0,0.0}};
+
+int window2 = 0;
 
 enum MENU_TYPE
 {
@@ -36,6 +37,7 @@ void init()
 void resetAll()
 {
     z=0;
+    gluLookAt(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 5.0f, 0.0f, 0.0f, 0.0f);
 }
 
 float getOpenGLX(int x)
@@ -105,8 +107,12 @@ void addWinValue(int x,int y)
 
 void myDisplay()
 {
-    glClear( GL_COLOR_BUFFER_BIT);
+     glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(-2, WIDTH, -2, HEIGHT);
     glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT );
     drawPoly();
     drawRect();
     glutSwapBuffers();
@@ -114,10 +120,10 @@ void myDisplay()
     glFlush();
 }
 
-void reshape (int w, int h)
-{
-    glViewport(0,0,w,h);
-  	//gluPerspective(45,float(WIDTH)/float(HEIGHT),10,100);
+void reshape(GLsizei w, GLsizei h) {
+    WIDTH=w; HEIGHT=h;
+    glViewport(0,0,WIDTH,HEIGHT);
+    glutPostRedisplay();
 }
 
 
