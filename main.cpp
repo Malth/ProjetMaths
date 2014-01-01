@@ -206,14 +206,14 @@ bool CyrusBeck(double x1, double x2, double y1, double y2, int nbSom, Point poly
 	dy = y2 - y1;
 	nbSeg = nbSom - 1;
 
-	for (i = 1; i = nbSeg; i++)
+	for (i = 1; i <= nbSeg; i++)
 	{
 		current = poly[i];
 
 		dn = dx * arrNormale[i].x + dy * arrNormale[i].y;
 		wn = (x1 - current.x) * arrNormale[i].x + (y1 - current.y) * arrNormale[i].y;
 
-		if(dn = 0)
+		if(dn == 0)
 			return wn >= 0;
 		else
 		{
@@ -326,13 +326,13 @@ void decoupage(Point PL[5000], Point PW[4])
 
     printf("\ntest");
 
-	for (i = 0; i = n3-1; i++)
+	for (i = 0; i <= n3-1; i++)
 	{
 	    printf("\ntest1");
 		n2 = 0;
-		for ( j=0; j = n1; j++)
+		for ( j=0; j <= n1; j++)
 		{
-			if (j = 1)
+			if (j == 1)
 				F = PL[j];
 			else
 			{
@@ -359,7 +359,7 @@ void decoupage(Point PL[5000], Point PW[4])
 
 			}
             int temp = 0;
-            for(temp; temp < 5000; temp++)
+            for(temp = 0; temp < 5000; temp++)
             {
              PL[temp].x = cutedPolygon[temp].x;
              PL[temp].y = cutedPolygon[temp].y;
@@ -367,6 +367,7 @@ void decoupage(Point PL[5000], Point PW[4])
 			n1 = n2;
 		}
 	}
+	printf("\ntest2");
 }
 
 
